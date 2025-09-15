@@ -17,8 +17,3 @@ This project provides an AI-powered log monitoring system using FastAPI (Backend
 - **Alerts & Notifications**
 - **Graphical Log Visualization**
 
-## 🔧 Setup & Installation
-### 1️⃣ Clone the Repository
-```sh
-git clone https://github.com/your-repo/log-monitoring-ai.git
-cd log-monitoring-ai
