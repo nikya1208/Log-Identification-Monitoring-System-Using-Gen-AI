@@ -2,11 +2,10 @@ global:
   resolve_timeout: 5m
 
   smtp_smarthost: 'smtp.gmail.com:587'
-  smtp_from: 'shindenikhil1208@gmail.com'
-  smtp_auth_username: 'shindenikhil1208@gmail.com'
-  smtp_auth_password: 'ohqg cykm lifs rxve'
+  smtp_from: '....@gmail.com'
+  smtp_auth_username: '...@gmail.com'
 
-  slack_api_url: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'  # Replace with real webhook
+  slack_api_url: ''  # Replace with real webhook
 
 route:
   group_by: ['alertname', 'job']
@@ -18,7 +17,7 @@ route:
 receivers:
   - name: 'email-and-slack'
     email_configs:
-      - to: 'santoshshinde1921@gmail.com'
+      - to: 'abc@gmail.com'
         send_resolved: true
     slack_configs:
       - channel: '#alerts'
