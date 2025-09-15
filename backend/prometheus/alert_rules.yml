@@ -1,0 +1,29 @@
+groups:
+  - name: FastAPI Alert Rules
+    rules:
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{job="fastapi", status=~"5.."}[1m]) > 0.1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High Error Rate on FastAPI"
+          description: "More than 10% of requests are failing with 5xx errors."
+
+      - alert: HighRequestLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="fastapi"}[1m])) > 1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Request Latency Detected"
+          description: "P95 request latency is over 1 second for FastAPI service."
+
+      - alert: FastAPIDown
+        expr: up{job="fastapi"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "FastAPI Service Down"
+          description: "FastAPI is not reachable or is down."

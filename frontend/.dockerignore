@@ -1,0 +1,49 @@
+2️⃣ Install Backend Dependencies
+
+cd backend
+pip install -r requirements.txt
+3️⃣ Install Frontend Dependencies
+
+cd frontend
+npm install
+4️⃣ Start Backend
+
+uvicorn app.main:app --reload
+5️⃣ Start Frontend
+
+cd frontend
+npm run dev
+6️⃣ Run using Docker
+
+docker-compose up --build -d
+📜 API Endpoints
+POST /logs/ → Submit log entry
+
+GET /logs/ → Fetch logs
+
+GET /alerts/ → Fetch alerts
+
+GET /ai/anomaly → Run AI detection
+
+📝 License
+MIT License
+
+---
+
+### 3️⃣ **.dockerignore** (Excludes unnecessary files from Docker images)  
+
+```dockerignore
+# Exclude files from Docker image
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+.env
+.env.local
+.git
+.gitignore
+node_modules/
+frontend/.next/
+backend/tests/
+.vscode/
+.idea/
+.DS_Store

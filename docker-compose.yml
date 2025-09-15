@@ -1,0 +1,206 @@
+# # C:\Users\NIKHIL\OneDrive\Desktop\logs\docker-compose.yml
+# version: "3.8"
+
+# services:
+
+#   db:
+#     image: postgres:latest
+#     container_name: postgres_db
+#     restart: always
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: NikShinde
+#       POSTGRES_DB: logs_db
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+#   backend:
+#     build: ./backend
+#     container_name: fastapi_backend
+#     restart: always
+#     depends_on:
+#       - db
+#     env_file:
+#       - ./backend/.env
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./backend:/app
+#       - ./backend/logs:/var/log/fastapi
+#     command: >
+#       uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+#     environment:
+#       ENABLE_METRICS: "true"  # ✅ Ensure metrics are exposed
+
+#   prometheus:
+#     image: prom/prometheus:latest
+#     container_name: prometheus
+#     restart: always
+#     ports:
+#       - "9090:9090"
+#     volumes:
+#       - ./backend/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+#       - ./backend/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+#       - prometheus_data:/prometheus
+#     command:
+#       - '--config.file=/etc/prometheus/prometheus.yml'
+#       - '--web.enable-lifecycle'
+#     extra_hosts:
+#       - "host.docker.internal:host-gateway"
+
+#   loki:
+#     image: grafana/loki:2.9.0
+#     container_name: loki
+#     restart: always
+#     ports:
+#       - "3100:3100"
+#     command: -config.file=/etc/loki/local-config.yaml
+#     volumes:
+#       - ./loki-config.yaml:/etc/loki/local-config.yaml:ro
+#       - ./loki-data:/loki
+
+#   promtail:
+#     image: grafana/promtail:2.9.0
+#     container_name: promtail
+#     restart: always
+#     depends_on:
+#       - backend
+#     volumes:
+#       - ./backend/logs:/var/log/fastapi:ro
+#       - ./promtail-config.yaml:/etc/promtail/promtail.yaml:ro
+#     command: -config.file=/etc/promtail/promtail.yaml
+
+#   grafana:
+#     image: grafana/grafana:latest
+#     container_name: grafana
+#     restart: always
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - prometheus
+#       - loki
+#     environment:
+#       GF_SECURITY_ADMIN_USER: admin
+#       GF_SECURITY_ADMIN_PASSWORD: admin
+#       GF_USERS_ALLOW_SIGN_UP: "false"
+#       GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-piechart-panel
+#     volumes:
+#       - grafana_data:/var/lib/grafana
+
+# volumes:
+#   postgres_data:
+#   grafana_data:
+#   prometheus_data:
+
+
+
+
+version: "3.8"
+
+services:
+
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: NikShinde
+      POSTGRES_DB: logs_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: fastapi_backend
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./backend/logs:/var/log/fastapi
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      ENABLE_METRICS: "true"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./backend/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./backend/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-lifecycle'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: always
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./backend/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro  # ✅ Corrected path
+    entrypoint:  # ✅ Ensures correct startup
+      - /bin/alertmanager
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --log.level=info
+
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    restart: always
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - ./loki-data:/loki
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail
+    restart: always
+    depends_on:
+      - backend
+    volumes:
+      - ./backend/logs:/var/log/fastapi:ro
+      - ./promtail-config.yaml:/etc/promtail/promtail.yaml:ro
+    command: -config.file=/etc/promtail/promtail.yaml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      - loki
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-piechart-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  postgres_data:
+  grafana_data:
+  prometheus_data:

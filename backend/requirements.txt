@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2
+pydantic
+passlib
+email-validator
+python-dotenv
+prometheus-fastapi-instrumentator
+requests
+pydantic-settings
+pydantic-settings>=2.0.0
+psycopg2-binary
+slack_sdk

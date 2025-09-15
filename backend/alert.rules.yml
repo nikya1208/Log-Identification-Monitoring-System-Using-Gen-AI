@@ -1,0 +1,13 @@
+# C:\Users\NIKHIL\OneDrive\Desktop\logs\backend\alert.rules.yml
+
+groups:
+  - name: FastAPI Alerts
+    rules:
+      - alert: FastAPIDown
+        expr: up{job="fastapi-app"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "FastAPI service is down"
+          description: "No response from FastAPI for 30 seconds"

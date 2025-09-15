@@ -1,0 +1,23 @@
+/* C:\Users\NIKHIL\OneDrive\Desktop\logs\frontend\styles\globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles */
+body {
+  @apply bg-gray-100 text-gray-900;
+  font-family: 'Inter', sans-serif;
+}
+
+.container {
+  @apply max-w-7xl mx-auto p-4;
+}
+
+button {
+  @apply bg-blue-500 text-white px-4 py-2 rounded-md transition-all duration-300;
+}
+
+button:hover {
+  @apply bg-blue-700;
+}

@@ -1,0 +1,22 @@
+
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: fastapi-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: fastapi
+          host: fastapi_backend              # Used for filtering in Grafana
+          app: log-monitoring-backend        # Optional: additional label
+          __path__: /var/log/fastapi/*.log   # Logs collected from FastAPI container volume

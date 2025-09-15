@@ -1,0 +1,25 @@
+
+
+[sources.app_logs]
+type = "file"
+include = ["/var/log/custom_logs/app.log"]  # Make sure this path exists inside the container
+ignore_older = 86400
+
+[transforms.parse_logs]
+type = "grok_parser"
+inputs = ["app_logs"]
+patterns = ['%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{DATA:source} - %{GREEDYDATA:message}']
+drop_field = false
+
+[sinks.console]
+type = "console"
+inputs = ["parse_logs"]
+target = "stdout"
+encoding.codec = "json"
+
+[sinks.loki]
+type = "loki"
+inputs = ["parse_logs"]
+endpoint = "http://loki:3100" # Important: use internal Docker hostname if Loki runs in Docker
+labels = { job = "app_logs", source = "{{ source }}", level = "{{ level }}" }
+encoding.codec = "json"

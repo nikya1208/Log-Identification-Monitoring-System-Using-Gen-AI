@@ -1,0 +1,33 @@
+global:
+  resolve_timeout: 5m
+
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'shindenikhil1208@gmail.com'
+  smtp_auth_username: 'shindenikhil1208@gmail.com'
+  smtp_auth_password: 'ohqg cykm lifs rxve'
+
+  slack_api_url: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'  # Replace with real webhook
+
+route:
+  group_by: ['alertname', 'job']
+  group_wait: 30s
+  group_interval: 2m
+  repeat_interval: 30m
+  receiver: 'email-and-slack'
+
+receivers:
+  - name: 'email-and-slack'
+    email_configs:
+      - to: 'santoshshinde1921@gmail.com'
+        send_resolved: true
+    slack_configs:
+      - channel: '#alerts'
+        send_resolved: true
+        text: "{{ range .Alerts }}*{{ .Annotations.summary }}*\n{{ .Annotations.description }}\n{{ end }}"
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'job']

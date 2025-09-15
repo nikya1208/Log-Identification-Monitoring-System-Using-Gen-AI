@@ -1,0 +1,26 @@
+/* C:\Users\NIKHIL\OneDrive\Desktop\logs\frontend\styles\logs.css */
+
+.log-table {
+    @apply w-full bg-white shadow-md rounded-lg;
+  }
+  
+  .log-table th {
+    @apply bg-gray-200 p-3 text-left font-semibold;
+  }
+  
+  .log-table td {
+    @apply p-3 border-b border-gray-300;
+  }
+  
+  .log-error {
+    @apply text-red-500 font-bold;
+  }
+  
+  .log-warning {
+    @apply text-yellow-500 font-semibold;
+  }
+  
+  .log-info {
+    @apply text-blue-500;
+  }
+  
